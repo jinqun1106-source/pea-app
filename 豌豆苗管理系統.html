@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="豌豆苗管理">
+<title>豌豆苗管理系統</title>
+<style>
+  :root {
+    --green: #1E8449;
+    --green-light: #D5F5E3;
+    --green-mid: #A9DFBF;
+    --blue: #154360;
+    --blue-light: #EAF4FB;
+    --amber: #784212;
+    --amber-light: #FDEBD0;
+    --purple: #6C3483;
+    --purple-light: #F5EEF8;
+    --red: #A93226;
+    --red-light: #FDEDEC;
+    --gray: #717D7E;
+    --gray-light: #F2F3F4;
+    --text: #1C2833;
+    --text-sub: #5D6D7E;
+    --border: #D5D8DC;
+    --bg: #F8F9FA;
+    --white: #FFFFFF;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; font-family: -apple-system, 'Helvetica Neue', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; }
+
+  /* Layout */
+  .app { display: flex; flex-direction: column; height: 100vh; max-width: 768px; margin: 0 auto; background: var(--white); box-shadow: 0 0 40px rgba(0,0,0,0.08); }
+  .topbar { background: var(--green); color: white; padding: 14px 16px 12px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+  .topbar-title { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; display: flex; align-items: center; gap: 8px; }
+  .topbar-date { font-size: 12px; opacity: 0.8; }
+  .content { flex: 1; overflow-y: auto; padding: 14px; }
+  .bottomnav { display: flex; border-top: 1px solid var(--border); background: var(--white); flex-shrink: 0; padding-bottom: env(safe-area-inset-bottom); }
+  .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px 4px 6px; gap: 3px; cursor: pointer; color: var(--gray); font-size: 10px; font-weight: 500; border: none; background: none; transition: color 0.15s; }
+  .nav-item svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .nav-item.active { color: var(--green); }
+
+  /* Pages */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* Cards */
+  .card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 12px; }
+  .card-hd { font-size: 13px; font-weight: 600; color: var(--text-sub); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 0.3px; }
+  .card-hd svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* Forms */
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .form-row.full { grid-template-columns: 1fr; }
+  .field label { display: block; font-size: 12px; color: var(--text-sub); font-weight: 500; margin-bottom: 4px; }
+  .field input, .field select { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--white); color: var(--text); font-size: 15px; font-family: inherit; -webkit-appearance: none; appearance: none; }
+  .field input:focus, .field select:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(30,132,73,0.12); }
+  .field input[readonly] { background: var(--gray-light); color: var(--text-sub); }
+  .field input.manual { background: var(--purple-light); border-color: #C39BD3; color: var(--purple); font-weight: 600; }
+
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--white); color: var(--text); font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: var(--green); color: white; border-color: var(--green); }
+  .btn-primary:active { background: #166d3b; }
+  .btn-sm { padding: 6px 10px; font-size: 12px; }
+  .btn-danger { color: var(--red); border-color: #F1948A; }
+  .btn-row { display: flex; justify-content: flex-end; margin-top: 6px; }
+
+  /* Table */
+  .tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 420px; }
+  th { text-align: left; font-weight: 600; font-size: 11px; color: var(--text-sub); padding: 6px 8px; border-bottom: 1px solid var(--border); text-transform: uppercase; letter-spacing: 0.3px; }
+  td { padding: 10px 8px; border-bottom: 1px solid var(--gray-light); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  .empty { text-align: center; color: var(--text-sub); font-size: 13px; padding: 28px 0; }
+
+  /* Badges */
+  .badge { display: inline-flex; padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge-green { background: var(--green-light); color: #1E8449; }
+  .badge-blue { background: var(--blue-light); color: var(--blue); }
+  .badge-amber { background: var(--amber-light); color: var(--amber); }
+  .badge-red { background: var(--red-light); color: var(--red); }
+  .badge-gray { background: var(--gray-light); color: var(--gray); }
+
+  /* Stats */
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+  .stat { background: var(--gray-light); border-radius: var(--radius-sm); padding: 11px 12px; }
+  .stat-label { font-size: 11px; color: var(--text-sub); font-weight: 500; margin-bottom: 4px; }
+  .stat-value { font-size: 20px; font-weight: 700; color: var(--text); }
+  .stat-unit { font-size: 11px; color: var(--text-sub); font-weight: 400; margin-left: 2px; }
+
+  /* Divider */
+  .divider { height: 1px; background: var(--border); margin: 12px 0; }
+
+  /* Section header */
+  .section-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .section-hd-title { font-size: 13px; font-weight: 600; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.3px; }
+
+  /* Colors */
+  .text-green { color: var(--green); font-weight: 600; }
+  .text-red { color: var(--red); font-weight: 600; }
+  .text-sub { color: var(--text-sub); }
+
+  /* Inventory special */
+  .inv-manual-cell { background: var(--purple-light); color: var(--purple); font-weight: 700; }
+  .inv-ledger-cell { background: var(--amber-light); color: var(--amber); font-weight: 600; }
+  .diff-ok { color: var(--green); font-weight: 600; }
+  .diff-warn { color: var(--red); font-weight: 600; }
+
+  /* Total row */
+  .total-row td { background: var(--green-light); font-weight: 700; color: var(--green); border-top: 2px solid var(--green-mid); }
+
+  /* Init stock banner */
+  .init-banner { background: var(--amber-light); border: 1px solid #F0B27A; border-radius: var(--radius-sm); padding: 10px 12px; display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 13px; }
+  .init-banner input { width: 70px; padding: 4px 8px; border: 1px solid #F0B27A; border-radius: 4px; font-size: 14px; font-weight: 600; text-align: center; background: white; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="topbar-title">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a9 9 0 0 1 9 9c0 3.6-2.2 6.8-5.5 8.2M12 2a9 9 0 0 0-9 9c0 3.6 2.2 6.8 5.5 8.2M12 2v20M7.5 7.5C9 9 11 10 12 12M16.5 7.5C15 9 13 10 12 12"/></svg>
+      豌豆苗管理系統
+    </div>
+    <div class="topbar-date" id="today-label"></div>
+  </div>
+
+  <div class="content">
+    <!-- 生產 -->
+    <div class="page active" id="page-production">
+      <div class="card">
+        <div class="card-hd">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>新增生產批次
+        </div>
+        <div class="form-row">
+          <div class="field"><label>浸種日期</label><input type="date" id="p-soak-date"></div>
+          <div class="field"><label>種子批號</label><input type="text" id="p-batch" placeholder="B2025-001"></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label>浸泡包數（25kg/包）</label><input type="number" id="p-bags" min="1" placeholder="0"></div>
+          <div class="field"><label>預計採收日（自動）</label><input type="text" id="p-est-harvest" readonly></div>
+        </div>
+        <div class="divider"></div>
+        <div class="card-hd">
+          <svg viewBox="0 0 24 24"><path d="M6 3h12l3 9H3L6 3zM3 12v9h18v-9"/></svg>填入採收資料
+        </div>
+        <div class="form-row">
+          <div class="field"><label>實際採收日</label><input type="date" id="p-harvest-date"></div>
+          <div class="field"><label>採收量（件）</label><input type="number" id="p-yield" min="0" placeholder="0"></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="addProduction()">新增批次</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-hd">
+          <div class="section-hd-title">生產記錄</div>
+          <span id="prod-count" class="text-sub" style="font-size:12px"></span>
+        </div>
+        <div class="tbl-wrap">
+          <table><thead><tr><th>浸種日期</th><th>批號</th><th>包數</th><th>預計採收</th><th>實際採收</th><th>採收量</th><th>天數</th><th>狀態</th><th></th></tr></thead>
+          <tbody id="prod-tbody"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 出貨 -->
+    <div class="page" id="page-shipment">
+      <div class="card">
+        <div class="card-hd">
+          <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>新增出貨
+        </div>
+        <div class="form-row">
+          <div class="field"><label>出貨日期</label><input type="date" id="s-date"></div>
+          <div class="field"><label>客戶</label><select id="s-customer"><option value="">選擇客戶</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label>箱裝（件）</label><input type="number" id="s-box" min="0" value="0"></div>
+          <div class="field"><label>300g（包）</label><input type="number" id="s-pkg" min="0" value="0"></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="addShipment()">新增出貨</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-hd">
+          <div class="section-hd-title">出貨記錄</div>
+          <span id="ship-total" class="text-sub" style="font-size:12px"></span>
+        </div>
+        <div class="tbl-wrap">
+          <table><thead><tr><th>日期</th><th>客戶</th><th>類型</th><th>箱裝</th><th>300g</th><th></th></tr></thead>
+          <tbody id="ship-tbody"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 庫存 -->
+    <div class="page" id="page-inventory">
+      <div class="init-banner">
+        <span style="color:var(--amber);font-weight:600;white-space:nowrap">期初庫存</span>
+        <input type="number" id="i-init" min="0" placeholder="0" onchange="saveInitStock()"> 件
+        <span style="color:var(--text-sub);font-size:12px">月初手動填入</span>
+      </div>
+      <div class="card">
+        <div class="card-hd">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>更新每日庫存
+        </div>
+        <div class="form-row">
+          <div class="field"><label>日期</label><input type="date" id="i-date"></div>
+          <div class="field"><label>實際庫存（件）手動盤點</label><input type="number" id="i-actual" min="0" placeholder="0" class="manual"></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="addInventory()">儲存庫存</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-hd"><div class="section-hd-title">庫存驗算</div></div>
+        <div class="tbl-wrap">
+          <table><thead><tr><th>日期</th><th>採收</th><th>出貨(件)</th><th>帳面</th><th>實際</th><th>差額</th><th>說明</th></tr></thead>
+          <tbody id="inv-tbody"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 月報 -->
+    <div class="page" id="page-report">
+      <div class="stat-grid" id="report-stats"></div>
+      <div class="card">
+        <div class="section-hd"><div class="section-hd-title">各客戶本月出貨</div></div>
+        <div class="tbl-wrap">
+          <table><thead><tr><th>客戶</th><th>類型</th><th>箱裝</th><th>300g</th><th>箱裝金額</th><th>300g金額</th><th>合計</th></tr></thead>
+          <tbody id="report-tbody"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 客戶 -->
+    <div class="page" id="page-customers">
+      <div class="card">
+        <div class="card-hd">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>新增客戶
+        </div>
+        <div class="form-row">
+          <div class="field"><label>客戶名稱</label><input type="text" id="c-name" placeholder="名稱"></div>
+          <div class="field"><label>類型</label><select id="c-type"><option value="大盤">大盤</option><option value="通路">通路</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label>聯絡人</label><input type="text" id="c-contact" placeholder="聯絡人"></div>
+          <div class="field"><label>電話</label><input type="text" id="c-phone" placeholder="電話"></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label>箱裝單價（元/件）</label><input type="number" id="c-box-price" min="0" placeholder="0"></div>
+          <div class="field"><label>300g單價（元/包）</label><input type="number" id="c-pkg-price" min="0" placeholder="0"></div>
+        </div>
+        <div class="form-row full">
+          <div class="field"><label>備註</label><input type="text" id="c-note" placeholder="備註"></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="addCustomer()">新增客戶</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-hd"><div class="section-hd-title">客戶列表</div></div>
+        <div class="tbl-wrap">
+          <table><thead><tr><th>名稱</th><th>類型</th><th>聯絡人</th><th>電話</th><th>箱裝價</th><th>300g價</th><th></th></tr></thead>
+          <tbody id="cust-tbody"></tbody></table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="bottomnav">
+    <button class="nav-item active" onclick="showPage('production',this)">
+      <svg viewBox="0 0 24 24"><path d="M12 2a9 9 0 0 1 9 9c0 3.6-2.2 6.8-5.5 8.2M12 2a9 9 0 0 0-9 9c0 3.6 2.2 6.8 5.5 8.2M12 2v20M7.5 7.5C9 9 11 10 12 12M16.5 7.5C15 9 13 10 12 12"/></svg>
+      生產
+    </button>
+    <button class="nav-item" onclick="showPage('shipment',this)">
+      <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v4h-7V8zM5.5 21a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM18.5 21a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/></svg>
+      出貨
+    </button>
+    <button class="nav-item" onclick="showPage('inventory',this)">
+      <svg viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM16 3H8L6 7h12l-2-4z"/></svg>
+      庫存
+    </button>
+    <button class="nav-item" onclick="showPage('report',this)">
+      <svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+      月報
+    </button>
+    <button class="nav-item" onclick="showPage('customers',this)">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      客戶
+    </button>
+  </nav>
+</div>
+
+<script>
+const todayStr = () => new Date().toISOString().slice(0,10);
+const fmtDate = d => d ? d.replace(/-/g,'/') : '—';
+const fmtNum = n => Number(n).toLocaleString();
+
+let state = { customers:[], production:[], shipments:[], inventory:[], initStock:0 };
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem('peaApp');
+    if (saved) state = { ...state, ...JSON.parse(saved) };
+  } catch(e) {}
+}
+function saveState() {
+  try { localStorage.setItem('peaApp', JSON.stringify(state)); } catch(e) {}
+}
+
+function init() {
+  loadState();
+  document.getElementById('today-label').textContent = todayStr().replace(/-/g,'/');
+  document.getElementById('p-soak-date').value = todayStr();
+  document.getElementById('s-date').value = todayStr();
+  document.getElementById('i-date').value = todayStr();
+  document.getElementById('i-init').value = state.initStock || 0;
+  updateEstHarvest();
+  renderAll();
+}
+
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (id==='report') renderReport();
+  if (id==='inventory') renderInventory();
+}
+
+function avgDays() {
+  const done = state.production.filter(p => p.harvestDate && p.soakDate);
+  if (!done.length) return 7;
+  const recent = done.slice(-5);
+  const avg = recent.reduce((s,p) => s + (new Date(p.harvestDate)-new Date(p.soakDate))/86400000, 0) / recent.length;
+  return Math.round(avg);
+}
+
+function updateEstHarvest() {
+  const soak = document.getElementById('p-soak-date').value;
+  const days = avgDays();
+  const doneCount = Math.min(state.production.filter(p=>p.harvestDate).length, 5);
+  if (soak) {
+    const est = new Date(new Date(soak).getTime() + days*86400000);
+    const estStr = est.toISOString().slice(0,10).replace(/-/g,'/');
+    const note = doneCount === 0 ? '預設7天' : `前${doneCount}批平均`;
+    document.getElementById('p-est-harvest').value = `${estStr}（${note}）`;
+  }
+}
+document.getElementById('p-soak-date').addEventListener('change', updateEstHarvest);
+
+function addProduction() {
+  const soak = document.getElementById('p-soak-date').value;
+  const batch = document.getElementById('p-batch').value.trim();
+  const bags = +document.getElementById('p-bags').value || 0;
+  if (!soak || !batch) { alert('請填入浸種日期及批號'); return; }
+  const days = avgDays();
+  const estDate = new Date(new Date(soak).getTime()+days*86400000).toISOString().slice(0,10);
+  const harvest = document.getElementById('p-harvest-date').value;
+  const yld = +document.getElementById('p-yield').value || 0;
+  state.production.push({ id:Date.now(), soakDate:soak, batch, bags, estHarvestDate:estDate, harvestDate:harvest||'', yield:yld });
+  saveState();
+  document.getElementById('p-batch').value='';
+  document.getElementById('p-bags').value='';
+  document.getElementById('p-harvest-date').value='';
+  document.getElementById('p-yield').value='';
+  updateEstHarvest();
+  renderProduction();
+}
+
+function renderProduction() {
+  const tbody = document.getElementById('prod-tbody');
+  const rows = [...state.production].reverse();
+  document.getElementById('prod-count').textContent = `共${state.production.length}批`;
+  if (!rows.length) { tbody.innerHTML='<tr><td colspan="9" class="empty">尚無生產記錄</td></tr>'; return; }
+  tbody.innerHTML = rows.map(p => {
+    const done = !!p.harvestDate;
+    const days = done ? Math.round((new Date(p.harvestDate)-new Date(p.soakDate))/86400000) : '—';
+    const status = done ? '<span class="badge badge-green">已採收</span>' : '<span class="badge badge-amber">生長中</span>';
+    return `<tr>
+      <td>${fmtDate(p.soakDate)}</td><td>${p.batch}</td><td>${p.bags}包</td>
+      <td>${fmtDate(p.estHarvestDate)}</td><td>${p.harvestDate?fmtDate(p.harvestDate):'—'}</td>
+      <td>${p.yield||'—'}</td><td>${days}</td><td>${status}</td>
+      <td><button class="btn btn-sm btn-danger" onclick="deleteProd(${p.id})">刪除</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function deleteProd(id) {
+  if (!confirm('確定刪除此批次？')) return;
+  state.production = state.production.filter(p=>p.id!==id);
+  saveState(); renderProduction();
+}
+
+function addCustomer() {
+  const name = document.getElementById('c-name').value.trim();
+  if (!name) { alert('請填入客戶名稱'); return; }
+  state.customers.push({ id:Date.now(), name, type:document.getElementById('c-type').value, contact:document.getElementById('c-contact').value.trim(), phone:document.getElementById('c-phone').value.trim(), boxPrice:+document.getElementById('c-box-price').value||0, pkgPrice:+document.getElementById('c-pkg-price').value||0, note:document.getElementById('c-note').value.trim() });
+  saveState();
+  ['c-name','c-contact','c-phone','c-box-price','c-pkg-price','c-note'].forEach(id=>document.getElementById(id).value='');
+  renderCustomers(); refreshCustSelect();
+}
+
+function renderCustomers() {
+  const tbody = document.getElementById('cust-tbody');
+  if (!state.customers.length) { tbody.innerHTML='<tr><td colspan="7" class="empty">尚無客戶</td></tr>'; return; }
+  tbody.innerHTML = state.customers.map(c=>`<tr>
+    <td><b>${c.name}</b></td>
+    <td><span class="badge ${c.type==='大盤'?'badge-blue':'badge-green'}">${c.type}</span></td>
+    <td>${c.contact||'—'}</td><td>${c.phone||'—'}</td>
+    <td>${c.boxPrice?c.boxPrice+'元':'—'}</td><td>${c.pkgPrice?c.pkgPrice+'元':'—'}</td>
+    <td><button class="btn btn-sm btn-danger" onclick="deleteCust(${c.id})">刪除</button></td>
+  </tr>`).join('');
+}
+
+function deleteCust(id) {
+  if (!confirm('確定刪除此客戶？')) return;
+  state.customers = state.customers.filter(c=>c.id!==id);
+  saveState(); renderCustomers(); refreshCustSelect();
+}
+
+function refreshCustSelect() {
+  const sel = document.getElementById('s-customer');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">選擇客戶</option>' + state.customers.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  sel.value = cur;
+}
+
+function addShipment() {
+  const date = document.getElementById('s-date').value;
+  const custId = document.getElementById('s-customer').value;
+  const box = +document.getElementById('s-box').value||0;
+  const pkg = +document.getElementById('s-pkg').value||0;
+  if (!date||!custId) { alert('請填入日期及客戶'); return; }
+  if (!box && !pkg) { alert('請填入出貨數量'); return; }
+  const cust = state.customers.find(c=>c.id==custId);
+  state.shipments.push({ id:Date.now(), date, custId:+custId, custName:cust.name, custType:cust.type, box, pkg });
+  saveState();
+  document.getElementById('s-box').value='0';
+  document.getElementById('s-pkg').value='0';
+  renderShipments();
+}
+
+function renderShipments() {
+  const tbody = document.getElementById('ship-tbody');
+  const now = new Date(); const m = now.getFullYear()+'-'+(now.getMonth()+1).toString().padStart(2,'0');
+  const mShips = state.shipments.filter(s=>s.date.startsWith(m));
+  const totBox = mShips.reduce((s,r)=>s+r.box,0);
+  const totPkg = mShips.reduce((s,r)=>s+r.pkg,0);
+  document.getElementById('ship-total').textContent = `本月 箱裝${totBox}件 / 300g ${totPkg}包`;
+  const rows = [...state.shipments].reverse().slice(0,60);
+  if (!rows.length) { tbody.innerHTML='<tr><td colspan="6" class="empty">尚無出貨記錄</td></tr>'; return; }
+  tbody.innerHTML = rows.map(s=>`<tr>
+    <td>${fmtDate(s.date)}</td><td><b>${s.custName}</b></td>
+    <td><span class="badge ${s.custType==='大盤'?'badge-blue':'badge-green'}">${s.custType}</span></td>
+    <td>${s.box||'—'}</td><td>${s.pkg||'—'}</td>
+    <td><button class="btn btn-sm btn-danger" onclick="deleteShip(${s.id})">刪除</button></td>
+  </tr>`).join('');
+}
+
+function deleteShip(id) {
+  if (!confirm('確定刪除此筆出貨？')) return;
+  state.shipments = state.shipments.filter(s=>s.id!==id);
+  saveState(); renderShipments();
+}
+
+function saveInitStock() {
+  state.initStock = +document.getElementById('i-init').value || 0;
+  saveState();
+}
+
+function addInventory() {
+  const date = document.getElementById('i-date').value;
+  const actual = +document.getElementById('i-actual').value;
+  if (!date) { alert('請填入日期'); return; }
+  const idx = state.inventory.findIndex(i=>i.date===date);
+  if (idx>=0) state.inventory[idx].actual = actual;
+  else state.inventory.push({ date, actual });
+  state.inventory.sort((a,b)=>a.date.localeCompare(b.date));
+  saveState();
+  document.getElementById('i-actual').value='';
+  renderInventory();
+}
+
+function renderInventory() {
+  const tbody = document.getElementById('inv-tbody');
+  const now = new Date(); const m = now.getFullYear()+'-'+(now.getMonth()+1).toString().padStart(2,'0');
+  const rows = state.inventory.filter(i=>i.date.startsWith(m));
+  if (!rows.length) { tbody.innerHTML='<tr><td colspan="7" class="empty">尚無庫存記錄</td></tr>'; return; }
+  let prev = state.initStock || 0;
+  tbody.innerHTML = rows.map(inv => {
+    const harvest = state.production.filter(p=>p.harvestDate===inv.date).reduce((s,p)=>s+p.yield,0);
+    const ships = state.shipments.filter(s=>s.date===inv.date);
+    const boxOut = ships.reduce((s,r)=>s+r.box,0);
+    const pkgOut = ships.reduce((s,r)=>s+r.pkg,0);
+    const totalOut = +(boxOut + pkgOut*0.05).toFixed(2);
+    const ledger = +(prev + harvest - totalOut).toFixed(2);
+    const diff = +(ledger - inv.actual).toFixed(2);
+    let label='', cls='';
+    if (diff===0) { label='庫存吻合'; cls='diff-ok'; }
+    else if (diff>0) { label=`散客/公關 ${diff}件`; cls='diff-ok'; }
+    else { label=`⚠️ 異常 ${Math.abs(diff)}件`; cls='diff-warn'; }
+    prev = inv.actual;
+    return `<tr>
+      <td>${fmtDate(inv.date)}</td><td>${harvest||0}</td><td>${totalOut}</td>
+      <td class="inv-ledger-cell">${ledger}</td>
+      <td class="inv-manual-cell">${inv.actual}</td>
+      <td class="${cls}">${diff>0?'+':''}${diff}</td>
+      <td style="font-size:12px" class="${cls}">${label}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderReport() {
+  const now = new Date(); const m = now.getFullYear()+'-'+(now.getMonth()+1).toString().padStart(2,'0');
+  const mProd = state.production.filter(p=>p.soakDate.startsWith(m));
+  const mHarvest = state.production.filter(p=>p.harvestDate&&p.harvestDate.startsWith(m));
+  const mShips = state.shipments.filter(s=>s.date.startsWith(m));
+  const totBox = mShips.reduce((s,r)=>s+r.box,0);
+  const totPkg = mShips.reduce((s,r)=>s+r.pkg,0);
+  const totHarvest = mHarvest.reduce((s,p)=>s+p.yield,0);
+  const mInv = state.inventory.filter(i=>i.date.startsWith(m));
+  let prev = state.initStock||0, totalDiff=0;
+  mInv.forEach(inv=>{
+    const harvest = state.production.filter(p=>p.harvestDate===inv.date).reduce((s,p)=>s+p.yield,0);
+    const ships = state.shipments.filter(s=>s.date===inv.date);
+    const out = ships.reduce((s,r)=>s+r.box+r.pkg*0.05,0);
+    const diff = +(prev+harvest-out-inv.actual).toFixed(2);
+    if (diff>0) totalDiff+=diff;
+    prev = inv.actual;
+  });
+  const avgD = mHarvest.length ? Math.round(mHarvest.reduce((s,p)=>{
+    return s+(new Date(p.harvestDate)-new Date(p.soakDate))/86400000;
+  },0)/mHarvest.length) : '—';
+  document.getElementById('report-stats').innerHTML = [
+    ['浸種批次', mProd.length, '批'],
+    ['本月採收', totHarvest, '件'],
+    ['箱裝出貨', totBox, '件'],
+    ['300g出貨', totPkg, '包'],
+    ['散客/公關', totalDiff.toFixed(1), '件'],
+    ['平均天數', avgD, '天'],
+  ].map(([l,v,u])=>`<div class="stat"><div class="stat-label">${l}</div><div class="stat-value">${v}<span class="stat-unit">${u}</span></div></div>`).join('');
+
+  const tbody = document.getElementById('report-tbody');
+  if (!state.customers.length) { tbody.innerHTML='<tr><td colspan="7" class="empty">尚無客戶資料</td></tr>'; return; }
+  let grand=0;
+  const rows = state.customers.map(c=>{
+    const cs = mShips.filter(s=>s.custId===c.id);
+    const box=cs.reduce((s,r)=>s+r.box,0), pkg=cs.reduce((s,r)=>s+r.pkg,0);
+    const ba=box*(c.boxPrice||0), pa=pkg*(c.pkgPrice||0), tot=ba+pa;
+    grand+=tot;
+    return `<tr><td><b>${c.name}</b></td>
+      <td><span class="badge ${c.type==='大盤'?'badge-blue':'badge-green'}">${c.type}</span></td>
+      <td>${box||'—'}</td><td>${pkg||'—'}</td>
+      <td>${ba?'$'+fmtNum(ba):'—'}</td><td>${pa?'$'+fmtNum(pa):'—'}</td>
+      <td><b>$${fmtNum(tot)}</b></td></tr>`;
+  }).join('');
+  tbody.innerHTML = rows + `<tr class="total-row"><td colspan="6" style="text-align:right">本月總計</td><td>$${fmtNum(grand)}</td></tr>`;
+}
+
+function renderAll() {
+  renderProduction(); renderCustomers(); renderShipments(); refreshCustSelect();
+}
+
+init();
+</script>
+</body>
+</html>
