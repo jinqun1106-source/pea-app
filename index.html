@@ -230,6 +230,24 @@
     <!-- 月報 -->
     <div class="page" id="page-report">
       <div class="stat-grid" id="report-stats"></div>
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="exportCSV('shipments')">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          匯出出貨記錄 CSV
+        </button>
+        <button class="btn btn-primary" onclick="exportCSV('production')">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          匯出生產記錄 CSV
+        </button>
+        <button class="btn btn-primary" onclick="exportCSV('inventory')">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          匯出庫存記錄 CSV
+        </button>
+        <button class="btn" onclick="exportCSV('all')">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          匯出全部資料 JSON
+        </button>
+      </div>
       <div class="card">
         <div class="section-hd"><div class="section-hd-title">各客戶本月出貨</div></div>
         <div class="tbl-wrap">
@@ -563,6 +581,67 @@ function renderReport() {
       <td><b>$${fmtNum(tot)}</b></td></tr>`;
   }).join('');
   tbody.innerHTML = rows + `<tr class="total-row"><td colspan="6" style="text-align:right">本月總計</td><td>$${fmtNum(grand)}</td></tr>`;
+}
+
+
+function exportCSV(type) {
+  const now = new Date();
+  const dateStr = now.getFullYear()+'-'+(now.getMonth()+1).toString().padStart(2,'0')+'-'+now.getDate().toString().padStart(2,'0');
+
+  if (type === 'all') {
+    const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+    downloadFile(blob, `豌豆苗全部資料_${dateStr}.json`);
+    return;
+  }
+
+  let csv = '', filename = '';
+
+  if (type === 'shipments') {
+    csv = '出貨日期,客戶名稱,客戶類型,箱裝(件),300g(包)\n';
+    state.shipments.forEach(s => {
+      csv += `${s.date},${s.custName},${s.custType},${s.box},${s.pkg}\n`;
+    });
+    filename = `豌豆苗出貨記錄_${dateStr}.csv`;
+  }
+
+  if (type === 'production') {
+    csv = '浸種日期,種子批號,浸泡包數,預計採收日,實際採收日,採收量(件),生產天數\n';
+    state.production.forEach(p => {
+      const days = p.harvestDate ? Math.round((new Date(p.harvestDate)-new Date(p.soakDate))/86400000) : '';
+      csv += `${p.soakDate},${p.batch},${p.bags},${p.estHarvestDate},${p.harvestDate||''},${p.yield||0},${days}\n`;
+    });
+    filename = `豌豆苗生產記錄_${dateStr}.csv`;
+  }
+
+  if (type === 'inventory') {
+    csv = '日期,當日採收(件),出貨箱裝(件),出貨300g(包),出貨合計(件),帳面庫存(件),實際庫存(件),差額(件),差額說明\n';
+    let prev = state.initStock || 0;
+    state.inventory.forEach(inv => {
+      const harvest = state.production.filter(p=>p.harvestDate===inv.date).reduce((s,p)=>s+p.yield,0);
+      const ships = state.shipments.filter(s=>s.date===inv.date);
+      const boxOut = ships.reduce((s,r)=>s+r.box,0);
+      const pkgOut = ships.reduce((s,r)=>s+r.pkg,0);
+      const totalOut = +(boxOut+pkgOut*0.05).toFixed(2);
+      const ledger = +(prev+harvest-totalOut).toFixed(2);
+      const diff = +(ledger-inv.actual).toFixed(2);
+      const label = diff===0 ? '庫存吻合' : diff>0 ? `散客/公關品${diff}件` : `庫存異常${Math.abs(diff)}件`;
+      csv += `${inv.date},${harvest},${boxOut},${pkgOut},${totalOut},${ledger},${inv.actual},${diff},${label}\n`;
+      prev = inv.actual;
+    });
+    filename = `豌豆苗庫存記錄_${dateStr}.csv`;
+  }
+
+  const bom = '\uFEFF';
+  const blob = new Blob([bom+csv], {type:'text/csv;charset=utf-8'});
+  downloadFile(blob, filename);
+}
+
+function downloadFile(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
 }
 
 function renderAll() {
