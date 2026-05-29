@@ -145,14 +145,7 @@
           <div class="field"><label>浸泡包數（25kg/包）</label><input type="number" id="p-bags" min="1" placeholder="0"></div>
           <div class="field"><label>預計採收日（自動）</label><input type="text" id="p-est-harvest" readonly></div>
         </div>
-        <div class="divider"></div>
-        <div class="card-hd">
-          <svg viewBox="0 0 24 24"><path d="M6 3h12l3 9H3L6 3zM3 12v9h18v-9"/></svg>填入採收資料
-        </div>
-        <div class="form-row">
-          <div class="field"><label>實際採收日</label><input type="date" id="p-harvest-date"></div>
-          <div class="field"><label>採收量（件）</label><input type="number" id="p-yield" min="0" placeholder="0"></div>
-        </div>
+
         <div class="btn-row">
           <button class="btn btn-primary" onclick="addProduction()">新增批次</button>
         </div>
@@ -387,8 +380,7 @@ function addProduction() {
   saveState();
   document.getElementById('p-batch').value='';
   document.getElementById('p-bags').value='';
-  document.getElementById('p-harvest-date').value='';
-  document.getElementById('p-yield').value='';
+
   updateEstHarvest();
   renderProduction();
 }
@@ -406,7 +398,10 @@ function renderProduction() {
       <td>${fmtDate(p.soakDate)}</td><td>${p.batch}</td><td>${p.bags}包</td>
       <td>${fmtDate(p.estHarvestDate)}</td><td>${p.harvestDate?fmtDate(p.harvestDate):'—'}</td>
       <td>${p.yield||'—'}</td><td>${days}</td><td>${status}</td>
-      <td><button class="btn btn-sm btn-danger" onclick="deleteProd(${p.id})">刪除</button></td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-sm" onclick="openEditModal(${p.id})" style="margin-right:4px">編輯</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteProd(${p.id})">刪除</button>
+      </td>
     </tr>`;
   }).join('');
 }
@@ -644,11 +639,82 @@ function downloadFile(blob, filename) {
   document.body.removeChild(a); URL.revokeObjectURL(url);
 }
 
+
+function openEditModal(id) {
+  const p = state.production.find(p=>p.id===id);
+  if (!p) return;
+  document.getElementById('edit-id').value = id;
+  document.getElementById('edit-batch-label').textContent = `批號：${p.batch}　浸種：${fmtDate(p.soakDate)}`;
+  document.getElementById('edit-soak-date').value = p.soakDate;
+  document.getElementById('edit-batch').value = p.batch;
+  document.getElementById('edit-bags').value = p.bags;
+  document.getElementById('edit-harvest-date').value = p.harvestDate || '';
+  document.getElementById('edit-yield').value = p.yield || '';
+  const modal = document.getElementById('edit-modal');
+  modal.style.display = 'flex';
+}
+
+function closeEditModal() {
+  document.getElementById('edit-modal').style.display = 'none';
+}
+
+function saveEdit() {
+  const id = +document.getElementById('edit-id').value;
+  const idx = state.production.findIndex(p=>p.id===id);
+  if (idx < 0) return;
+  const soakDate = document.getElementById('edit-soak-date').value;
+  const harvestDate = document.getElementById('edit-harvest-date').value;
+  state.production[idx].soakDate = soakDate;
+  state.production[idx].batch = document.getElementById('edit-batch').value.trim();
+  state.production[idx].bags = +document.getElementById('edit-bags').value || 0;
+  state.production[idx].harvestDate = harvestDate;
+  state.production[idx].yield = +document.getElementById('edit-yield').value || 0;
+  // recalc estHarvestDate based on current avg
+  const days = avgDays();
+  state.production[idx].estHarvestDate = new Date(new Date(soakDate).getTime()+days*86400000).toISOString().slice(0,10);
+  saveState();
+  closeEditModal();
+  renderProduction();
+  updateEstHarvest();
+}
+
+// Close modal on backdrop click
+document.getElementById('edit-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeEditModal();
+});
+
 function renderAll() {
   renderProduction(); renderCustomers(); renderShipments(); refreshCustSelect();
 }
 
 init();
 </script>
+
+<!-- 編輯採收 Modal -->
+<div id="edit-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:1000;align-items:center;justify-content:center;padding:20px">
+  <div style="background:white;border-radius:12px;padding:20px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
+    <div style="font-size:16px;font-weight:600;margin-bottom:4px">編輯批次</div>
+    <div id="edit-batch-label" style="font-size:13px;color:var(--text-sub);margin-bottom:16px"></div>
+    <div class="form-row">
+      <div class="field"><label>浸種日期</label><input type="date" id="edit-soak-date"></div>
+      <div class="field"><label>種子批號</label><input type="text" id="edit-batch"></div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>浸泡包數（25kg/包）</label><input type="number" id="edit-bags" min="0"></div>
+      <div class="field"></div>
+    </div>
+    <div style="height:1px;background:var(--border);margin:12px 0"></div>
+    <div style="font-size:12px;font-weight:600;color:var(--text-sub);text-transform:uppercase;letter-spacing:0.3px;margin-bottom:10px">採收資料</div>
+    <div class="form-row">
+      <div class="field"><label>實際採收日</label><input type="date" id="edit-harvest-date"></div>
+      <div class="field"><label>採收量（件）</label><input type="number" id="edit-yield" min="0" placeholder="0"></div>
+    </div>
+    <input type="hidden" id="edit-id">
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
+      <button class="btn" onclick="closeEditModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveEdit()">儲存</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
