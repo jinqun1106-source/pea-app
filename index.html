@@ -374,13 +374,10 @@ function addProduction() {
   if (!soak || !batch) { alert('請填入浸種日期及批號'); return; }
   const days = avgDays();
   const estDate = new Date(new Date(soak).getTime()+days*86400000).toISOString().slice(0,10);
-  const harvest = document.getElementById('p-harvest-date').value;
-  const yld = +document.getElementById('p-yield').value || 0;
-  state.production.push({ id:Date.now(), soakDate:soak, batch, bags, estHarvestDate:estDate, harvestDate:harvest||'', yield:yld });
+  state.production.push({ id:Date.now(), soakDate:soak, batch, bags, estHarvestDate:estDate, harvestDate:'', yield:0 });
   saveState();
   document.getElementById('p-batch').value='';
   document.getElementById('p-bags').value='';
-
   updateEstHarvest();
   renderProduction();
 }
