@@ -27,13 +27,14 @@
     --border: #D5D8DC;
     --bg: #F8F9FA;
     --white: #FFFFFF;
+    --teal: #0E6655;
+    --teal-light: #D0ECE7;
     --radius: 10px;
     --radius-sm: 6px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body { height: 100%; font-family: -apple-system, 'Helvetica Neue', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; }
 
-  /* Layout */
   .app { display: flex; flex-direction: column; height: 100vh; max-width: 768px; margin: 0 auto; background: var(--white); box-shadow: 0 0 40px rgba(0,0,0,0.08); }
   .topbar { background: var(--green); color: white; padding: 14px 16px 12px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
   .topbar-title { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; display: flex; align-items: center; gap: 8px; }
@@ -44,34 +45,32 @@
   .nav-item svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
   .nav-item.active { color: var(--green); }
 
-  /* Pages */
   .page { display: none; }
   .page.active { display: block; }
 
-  /* Cards */
   .card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 12px; }
   .card-hd { font-size: 13px; font-weight: 600; color: var(--text-sub); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 0.3px; }
   .card-hd svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-  /* Forms */
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
   .form-row.full { grid-template-columns: 1fr; }
+  .form-row.three { grid-template-columns: 1fr 1fr 1fr; }
   .field label { display: block; font-size: 12px; color: var(--text-sub); font-weight: 500; margin-bottom: 4px; }
-  .field input, .field select { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--white); color: var(--text); font-size: 15px; font-family: inherit; -webkit-appearance: none; appearance: none; }
-  .field input:focus, .field select:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(30,132,73,0.12); }
+  .field input, .field select, .field textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--white); color: var(--text); font-size: 15px; font-family: inherit; -webkit-appearance: none; appearance: none; }
+  .field textarea { resize: vertical; min-height: 60px; font-size: 14px; }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(30,132,73,0.12); }
   .field input[readonly] { background: var(--gray-light); color: var(--text-sub); }
   .field input.manual { background: var(--purple-light); border-color: #C39BD3; color: var(--purple); font-weight: 600; }
 
-  /* Buttons */
   .btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--white); color: var(--text); font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; transition: all 0.15s; }
   .btn:active { transform: scale(0.97); }
   .btn-primary { background: var(--green); color: white; border-color: var(--green); }
   .btn-primary:active { background: #166d3b; }
+  .btn-teal { background: var(--teal); color: white; border-color: var(--teal); }
   .btn-sm { padding: 6px 10px; font-size: 12px; }
   .btn-danger { color: var(--red); border-color: #F1948A; }
   .btn-row { display: flex; justify-content: flex-end; margin-top: 6px; }
 
-  /* Table */
   .tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 420px; }
   th { text-align: left; font-weight: 600; font-size: 11px; color: var(--text-sub); padding: 6px 8px; border-bottom: 1px solid var(--border); text-transform: uppercase; letter-spacing: 0.3px; }
@@ -79,45 +78,52 @@
   tr:last-child td { border-bottom: none; }
   .empty { text-align: center; color: var(--text-sub); font-size: 13px; padding: 28px 0; }
 
-  /* Badges */
   .badge { display: inline-flex; padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
   .badge-green { background: var(--green-light); color: #1E8449; }
   .badge-blue { background: var(--blue-light); color: var(--blue); }
   .badge-amber { background: var(--amber-light); color: var(--amber); }
   .badge-red { background: var(--red-light); color: var(--red); }
   .badge-gray { background: var(--gray-light); color: var(--gray); }
+  .badge-teal { background: var(--teal-light); color: var(--teal); }
 
-  /* Stats */
   .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
   .stat { background: var(--gray-light); border-radius: var(--radius-sm); padding: 11px 12px; }
   .stat-label { font-size: 11px; color: var(--text-sub); font-weight: 500; margin-bottom: 4px; }
   .stat-value { font-size: 20px; font-weight: 700; color: var(--text); }
   .stat-unit { font-size: 11px; color: var(--text-sub); font-weight: 400; margin-left: 2px; }
 
-  /* Divider */
   .divider { height: 1px; background: var(--border); margin: 12px 0; }
-
-  /* Section header */
   .section-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
   .section-hd-title { font-size: 13px; font-weight: 600; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.3px; }
 
-  /* Colors */
   .text-green { color: var(--green); font-weight: 600; }
   .text-red { color: var(--red); font-weight: 600; }
   .text-sub { color: var(--text-sub); }
 
-  /* Inventory special */
   .inv-manual-cell { background: var(--purple-light); color: var(--purple); font-weight: 700; }
   .inv-ledger-cell { background: var(--amber-light); color: var(--amber); font-weight: 600; }
   .diff-ok { color: var(--green); font-weight: 600; }
   .diff-warn { color: var(--red); font-weight: 600; }
-
-  /* Total row */
   .total-row td { background: var(--green-light); font-weight: 700; color: var(--green); border-top: 2px solid var(--green-mid); }
 
-  /* Init stock banner */
   .init-banner { background: var(--amber-light); border: 1px solid #F0B27A; border-radius: var(--radius-sm); padding: 10px 12px; display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 13px; }
   .init-banner input { width: 70px; padding: 4px 8px; border: 1px solid #F0B27A; border-radius: 4px; font-size: 14px; font-weight: 600; text-align: center; background: white; }
+
+  /* 種子庫存專屬 */
+  .seed-stock-bar { display: flex; align-items: center; gap: 10px; background: var(--teal-light); border: 1px solid #76C8B8; border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 12px; flex-wrap: wrap; }
+  .seed-stock-bar .lot-tag { background: var(--teal); color: white; border-radius: 4px; padding: 2px 8px; font-size: 12px; font-weight: 700; }
+  .seed-stock-bar .stock-num { font-size: 20px; font-weight: 800; color: var(--teal); }
+  .seed-stock-bar .stock-label { font-size: 12px; color: var(--teal); }
+  .seed-low { background: var(--amber-light) !important; border-color: #F0B27A !important; }
+  .seed-low .lot-tag { background: var(--amber) !important; }
+  .seed-low .stock-num { color: var(--amber) !important; }
+  .seed-low .stock-label { color: var(--amber) !important; }
+  .seed-empty { background: var(--red-light) !important; border-color: #F1948A !important; }
+  .seed-empty .lot-tag { background: var(--red) !important; }
+  .seed-empty .stock-num { color: var(--red) !important; }
+  .seed-empty .stock-label { color: var(--red) !important; }
+
+  .note-cell { font-size: 11px; color: var(--text-sub); max-width: 160px; white-space: pre-wrap; word-break: break-all; }
 </style>
 </head>
 <body>
@@ -131,21 +137,23 @@
   </div>
 
   <div class="content">
-    <!-- 生產 -->
+
+    <!-- ══ 生產 ══ -->
     <div class="page active" id="page-production">
       <div class="card">
-        <div class="card-hd">
-          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>新增生產批次
-        </div>
+        <div class="card-hd"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>新增生產批次</div>
         <div class="form-row">
           <div class="field"><label>浸種日期</label><input type="date" id="p-soak-date"></div>
-          <div class="field"><label>種子批號</label><input type="text" id="p-batch" placeholder="B2025-001"></div>
+          <div class="field">
+            <label>種子批號（使用批次）</label>
+            <select id="p-seed-lot"><option value="">— 選擇種子批次 —</option></select>
+          </div>
         </div>
         <div class="form-row">
           <div class="field"><label>浸泡包數（25kg/包）</label><input type="number" id="p-bags" min="1" placeholder="0"></div>
           <div class="field"><label>預計採收日（自動）</label><input type="text" id="p-est-harvest" readonly></div>
         </div>
-
+        <div id="p-stock-hint" style="font-size:12px;color:var(--teal);margin-bottom:8px;display:none"></div>
         <div class="btn-row">
           <button class="btn btn-primary" onclick="addProduction()">新增批次</button>
         </div>
@@ -156,18 +164,16 @@
           <span id="prod-count" class="text-sub" style="font-size:12px"></span>
         </div>
         <div class="tbl-wrap">
-          <table><thead><tr><th>浸種日期</th><th>批號</th><th>包數</th><th>預計採收</th><th>實際採收</th><th>採收量</th><th>天數</th><th>狀態</th><th></th></tr></thead>
+          <table><thead><tr><th>浸種日期</th><th>種子批號</th><th>包數</th><th>預計採收</th><th>實際採收</th><th>採收量</th><th>天數</th><th>狀態</th><th></th></tr></thead>
           <tbody id="prod-tbody"></tbody></table>
         </div>
       </div>
     </div>
 
-    <!-- 出貨 -->
+    <!-- ══ 出貨 ══ -->
     <div class="page" id="page-shipment">
       <div class="card">
-        <div class="card-hd">
-          <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>新增出貨
-        </div>
+        <div class="card-hd"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>新增出貨</div>
         <div class="form-row">
           <div class="field"><label>出貨日期</label><input type="date" id="s-date"></div>
           <div class="field"><label>客戶</label><select id="s-customer"><option value="">選擇客戶</option></select></div>
@@ -192,7 +198,7 @@
       </div>
     </div>
 
-    <!-- 庫存 -->
+    <!-- ══ 庫存 ══ -->
     <div class="page" id="page-inventory">
       <div class="init-banner">
         <span style="color:var(--amber);font-weight:600;white-space:nowrap">期初庫存</span>
@@ -200,9 +206,7 @@
         <span style="color:var(--text-sub);font-size:12px">月初手動填入</span>
       </div>
       <div class="card">
-        <div class="card-hd">
-          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>更新每日庫存
-        </div>
+        <div class="card-hd"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>更新每日庫存</div>
         <div class="form-row">
           <div class="field"><label>日期</label><input type="date" id="i-date"></div>
           <div class="field"><label>實際庫存（件）手動盤點</label><input type="number" id="i-actual" min="0" placeholder="0" class="manual"></div>
@@ -220,26 +224,89 @@
       </div>
     </div>
 
-    <!-- 月報 -->
+    <!-- ══ 種子庫存 ══ -->
+    <div class="page" id="page-seeds">
+
+      <!-- 即時庫存概覽 -->
+      <div id="seed-overview"></div>
+
+      <!-- 新增入庫 -->
+      <div class="card">
+        <div class="card-hd">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>新增種子入庫
+        </div>
+
+        <!-- 批號自動產生區 -->
+        <div style="background:var(--teal-light);border:1px solid #76C8B8;border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <span style="font-size:12px;color:var(--teal);font-weight:600">批號預覽</span>
+          <span id="lot-preview" style="font-size:18px;font-weight:800;color:var(--teal);letter-spacing:1px">PEA-—</span>
+          <span style="font-size:11px;color:var(--teal);opacity:0.8">依入庫日期自動產生</span>
+        </div>
+
+        <div class="form-row">
+          <div class="field"><label>入庫日期（ETA）</label><input type="date" id="sd-date" onchange="updateLotPreview()"></div>
+          <div class="field"><label>品種</label><input type="text" id="sd-variety" placeholder="例：kaspa / palafield"></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label>入庫包數（25KG/包）</label><input type="number" id="sd-bags" min="1" placeholder="0"></div>
+          <div class="field"><label>成本單價（NT$/KG）</label><input type="number" id="sd-unitcost" placeholder="0.00" step="0.01"></div>
+        </div>
+        <div class="form-row full">
+          <div class="field">
+            <label>備註　<span style="color:var(--text-sub);font-weight:400">品質紀錄、使用摘要等，如：發芽率92%、[已用於5月播種]</span></label>
+            <textarea id="sd-note" placeholder="例：發芽率92%  外觀均勻&#10;[已用於農場A 5月播種批]"></textarea>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-teal" onclick="addSeedLot()">新增入庫</button>
+        </div>
+      </div>
+
+      <!-- 批次列表 -->
+      <div class="card">
+        <div class="section-hd">
+          <div class="section-hd-title">種子批次記錄</div>
+          <span id="seed-lot-count" class="text-sub" style="font-size:12px"></span>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>批號</th><th>入庫日</th><th>品種</th><th>入庫</th><th>已用</th><th>剩餘</th><th>NT$/KG</th><th>備註</th><th></th></tr></thead>
+            <tbody id="seed-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 使用記錄 -->
+      <div class="card">
+        <div class="section-hd">
+          <div class="section-hd-title">種子使用記錄（由生產頁自動產生）</div>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>浸種日期</th><th>種子批號</th><th>使用包數</th><th>生產批次</th></tr></thead>
+            <tbody id="seeduse-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ 月報 ══ -->
     <div class="page" id="page-report">
       <div class="stat-grid" id="report-stats"></div>
       <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
         <button class="btn btn-primary" onclick="exportCSV('shipments')">
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          匯出出貨記錄 CSV
+          匯出出貨記錄
         </button>
         <button class="btn btn-primary" onclick="exportCSV('production')">
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          匯出生產記錄 CSV
+          匯出生產記錄
         </button>
-        <button class="btn btn-primary" onclick="exportCSV('inventory')">
+        <button class="btn btn-teal" onclick="exportCSV('seeds')">
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          匯出庫存記錄 CSV
+          匯出種子庫存
         </button>
-        <button class="btn" onclick="exportCSV('all')">
-          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          匯出全部資料 JSON
-        </button>
+        <button class="btn" onclick="exportCSV('all')">匯出全部 JSON</button>
       </div>
       <div class="card">
         <div class="section-hd"><div class="section-hd-title">各客戶本月出貨</div></div>
@@ -250,12 +317,10 @@
       </div>
     </div>
 
-    <!-- 客戶 -->
+    <!-- ══ 客戶 ══ -->
     <div class="page" id="page-customers">
       <div class="card">
-        <div class="card-hd">
-          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>新增客戶
-        </div>
+        <div class="card-hd"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>新增客戶</div>
         <div class="form-row">
           <div class="field"><label>客戶名稱</label><input type="text" id="c-name" placeholder="名稱"></div>
           <div class="field"><label>類型</label><select id="c-type"><option value="大盤">大盤</option><option value="通路">通路</option></select></div>
@@ -283,7 +348,8 @@
         </div>
       </div>
     </div>
-  </div>
+
+  </div><!-- /content -->
 
   <nav class="bottomnav">
     <button class="nav-item active" onclick="showPage('production',this)">
@@ -298,6 +364,10 @@
       <svg viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM16 3H8L6 7h12l-2-4z"/></svg>
       庫存
     </button>
+    <button class="nav-item" onclick="showPage('seeds',this)">
+      <svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="4" ry="7"/><path d="M12 5C10 3 6 3 4 5c0 4 3 7 8 7M12 5c2-2 6-2 8 0 0 4-3 7-8 7"/></svg>
+      種子
+    </button>
     <button class="nav-item" onclick="showPage('report',this)">
       <svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
       月報
@@ -307,33 +377,77 @@
       客戶
     </button>
   </nav>
-</div>
+</div><!-- /app -->
 
 <script>
 const todayStr = () => new Date().toISOString().slice(0,10);
 const fmtDate = d => d ? d.replace(/-/g,'/') : '—';
 const fmtNum = n => Number(n).toLocaleString();
 
-let state = { customers:[], production:[], shipments:[], inventory:[], initStock:0 };
+// ── 批號產生：PEA-YYMM（同月第二批加 -2）────────────────────────────────────
+function genLotId(dateStr) {
+  if (!dateStr) return 'PEA-—';
+  const [y, m] = dateStr.split('-');
+  const base = 'PEA-' + y.slice(2) + m;
+  // 計算同月已有幾批
+  const sameMonth = state.seedLots.filter(l => l.lotId.startsWith(base));
+  if (!sameMonth.length) return base;
+  return base + '-' + (sameMonth.length + 1);
+}
+
+function updateLotPreview() {
+  const d = document.getElementById('sd-date').value;
+  document.getElementById('lot-preview').textContent = genLotId(d) || 'PEA-—';
+  updateSeedStockHint();
+}
+
+// ── State ────────────────────────────────────────────────────────────────────
+let state = {
+  customers: [],
+  production: [],
+  shipments: [],
+  inventory: [],
+  initStock: 0,
+  seedLots: []   // 新增：種子批次
+};
 
 function loadState() {
   try {
     const saved = localStorage.getItem('peaApp');
-    if (saved) state = { ...state, ...JSON.parse(saved) };
+    if (saved) state = { seedLots: [], ...state, ...JSON.parse(saved) };
   } catch(e) {}
 }
 function saveState() {
   try { localStorage.setItem('peaApp', JSON.stringify(state)); } catch(e) {}
 }
 
+// ── 種子庫存計算 ──────────────────────────────────────────────────────────────
+function seedUsedBags(lotId) {
+  return state.production
+    .filter(p => p.seedLotId === lotId)
+    .reduce((s, p) => s + (p.bags || 0), 0);
+}
+function seedRemainingBags(lot) {
+  return (lot.bags || 0) - seedUsedBags(lot.lotId);
+}
+function activeSeedLots() {
+  // 有剩餘庫存的批次，依入庫日期排序（最舊優先，FIFO）
+  return state.seedLots
+    .filter(l => seedRemainingBags(l) > 0)
+    .sort((a,b) => a.date.localeCompare(b.date));
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
 function init() {
   loadState();
   document.getElementById('today-label').textContent = todayStr().replace(/-/g,'/');
   document.getElementById('p-soak-date').value = todayStr();
   document.getElementById('s-date').value = todayStr();
   document.getElementById('i-date').value = todayStr();
+  document.getElementById('sd-date').value = todayStr();
   document.getElementById('i-init').value = state.initStock || 0;
   updateEstHarvest();
+  updateLotPreview();
   renderAll();
 }
 
@@ -344,13 +458,15 @@ function showPage(id, btn) {
   if (btn) btn.classList.add('active');
   if (id==='report') renderReport();
   if (id==='inventory') renderInventory();
+  if (id==='seeds') renderSeeds();
 }
 
+// ── 生產 ──────────────────────────────────────────────────────────────────────
 function avgDays() {
   const done = state.production.filter(p => p.harvestDate && p.soakDate);
   if (!done.length) return 7;
   const recent = done.slice(-5);
-  const avg = recent.reduce((s,p) => s + (new Date(p.harvestDate)-new Date(p.soakDate))/86400000, 0) / recent.length;
+  const avg = recent.reduce((s,p) => s+(new Date(p.harvestDate)-new Date(p.soakDate))/86400000, 0) / recent.length;
   return Math.round(avg);
 }
 
@@ -361,25 +477,84 @@ function updateEstHarvest() {
   if (soak) {
     const est = new Date(new Date(soak).getTime() + days*86400000);
     const estStr = est.toISOString().slice(0,10).replace(/-/g,'/');
-    const note = doneCount === 0 ? '預設7天' : `前${doneCount}批平均`;
+    const note = doneCount===0 ? '預設7天' : `前${doneCount}批平均`;
     document.getElementById('p-est-harvest').value = `${estStr}（${note}）`;
   }
+  refreshSeedLotSelect();
+  updateSeedStockHint();
 }
+
+function updateSeedStockHint() {
+  const lotId = document.getElementById('p-seed-lot').value;
+  const bags  = +document.getElementById('p-bags').value || 0;
+  const hint  = document.getElementById('p-stock-hint');
+  if (!lotId) { hint.style.display='none'; return; }
+  const lot = state.seedLots.find(l=>l.lotId===lotId);
+  if (!lot) { hint.style.display='none'; return; }
+  const rem = seedRemainingBags(lot);
+  const after = rem - bags;
+  hint.style.display = 'block';
+  if (bags===0) {
+    hint.textContent = `📦 ${lotId} 目前剩餘 ${rem} 包`;
+    hint.style.color = 'var(--teal)';
+  } else if (after < 0) {
+    hint.textContent = `⚠️ 庫存不足！${lotId} 剩餘 ${rem} 包，需求 ${bags} 包`;
+    hint.style.color = 'var(--red)';
+  } else {
+    hint.textContent = `✓ 使用後剩餘 ${after} 包（現有 ${rem} 包）`;
+    hint.style.color = after < 50 ? 'var(--amber)' : 'var(--teal)';
+  }
+}
+
 document.getElementById('p-soak-date').addEventListener('change', updateEstHarvest);
+document.getElementById('p-bags').addEventListener('input', updateSeedStockHint);
+document.getElementById('p-seed-lot').addEventListener('change', updateSeedStockHint);
+
+function refreshSeedLotSelect() {
+  const sel = document.getElementById('p-seed-lot');
+  const cur = sel.value;
+  const active = activeSeedLots();
+  sel.innerHTML = '<option value="">— 選擇種子批次 —</option>' +
+    active.map(l => `<option value="${l.lotId}">${l.lotId}（剩 ${seedRemainingBags(l)} 包）${l.variety ? '  '+l.variety : ''}</option>`).join('') +
+    (state.seedLots.filter(l=>seedRemainingBags(l)<=0).length ?
+      '<optgroup label="────已用盡────">' +
+      state.seedLots.filter(l=>seedRemainingBags(l)<=0).map(l=>`<option value="${l.lotId}" style="color:var(--gray)">${l.lotId}（已用盡）</option>`).join('') +
+      '</optgroup>' : '');
+  sel.value = cur || (active.length ? active[0].lotId : '');
+  updateSeedStockHint();
+}
 
 function addProduction() {
-  const soak = document.getElementById('p-soak-date').value;
-  const batch = document.getElementById('p-batch').value.trim();
-  const bags = +document.getElementById('p-bags').value || 0;
-  if (!soak || !batch) { alert('請填入浸種日期及批號'); return; }
+  const soak   = document.getElementById('p-soak-date').value;
+  const lotId  = document.getElementById('p-seed-lot').value;
+  const bags   = +document.getElementById('p-bags').value || 0;
+  if (!soak)  { alert('請填入浸種日期'); return; }
+  if (!lotId) { alert('請選擇種子批次'); return; }
+  if (bags < 1) { alert('請填入浸泡包數'); return; }
+
+  const lot = state.seedLots.find(l => l.lotId === lotId);
+  const rem = lot ? seedRemainingBags(lot) : 0;
+  if (bags > rem) {
+    if (!confirm(`⚠️ 庫存不足：${lotId} 剩餘 ${rem} 包，確定仍要記錄 ${bags} 包？`)) return;
+  }
+
   const days = avgDays();
   const estDate = new Date(new Date(soak).getTime()+days*86400000).toISOString().slice(0,10);
-  state.production.push({ id:Date.now(), soakDate:soak, batch, bags, estHarvestDate:estDate, harvestDate:'', yield:0 });
+  state.production.push({
+    id: Date.now(),
+    soakDate: soak,
+    batch: lotId,       // batch 欄位沿用，存 lotId
+    seedLotId: lotId,
+    bags,
+    estHarvestDate: estDate,
+    harvestDate: '',
+    yield: 0
+  });
   saveState();
-  document.getElementById('p-batch').value='';
-  document.getElementById('p-bags').value='';
+  document.getElementById('p-bags').value = '';
   updateEstHarvest();
   renderProduction();
+  renderSeeds();
 }
 
 function renderProduction() {
@@ -391,9 +566,13 @@ function renderProduction() {
     const done = !!p.harvestDate;
     const days = done ? Math.round((new Date(p.harvestDate)-new Date(p.soakDate))/86400000) : '—';
     const status = done ? '<span class="badge badge-green">已採收</span>' : '<span class="badge badge-amber">生長中</span>';
+    const lotLabel = p.seedLotId || p.batch || '—';
     return `<tr>
-      <td>${fmtDate(p.soakDate)}</td><td>${p.batch}</td><td>${p.bags}包</td>
-      <td>${fmtDate(p.estHarvestDate)}</td><td>${p.harvestDate?fmtDate(p.harvestDate):'—'}</td>
+      <td>${fmtDate(p.soakDate)}</td>
+      <td><span class="badge badge-teal" style="font-size:10px">${lotLabel}</span></td>
+      <td>${p.bags}包</td>
+      <td>${fmtDate(p.estHarvestDate)}</td>
+      <td>${p.harvestDate?fmtDate(p.harvestDate):'—'}</td>
       <td>${p.yield||'—'}</td><td>${days}</td><td>${status}</td>
       <td style="white-space:nowrap">
         <button class="btn btn-sm" onclick="openEditModal(${p.id})" style="margin-right:4px">編輯</button>
@@ -406,9 +585,106 @@ function renderProduction() {
 function deleteProd(id) {
   if (!confirm('確定刪除此批次？')) return;
   state.production = state.production.filter(p=>p.id!==id);
-  saveState(); renderProduction();
+  saveState(); renderProduction(); renderSeeds();
 }
 
+// ── 種子庫存 ──────────────────────────────────────────────────────────────────
+function addSeedLot() {
+  const date     = document.getElementById('sd-date').value;
+  const variety  = document.getElementById('sd-variety').value.trim();
+  const bags     = +document.getElementById('sd-bags').value || 0;
+  const unitcost = +document.getElementById('sd-unitcost').value || 0;
+  const note     = document.getElementById('sd-note').value.trim();
+
+  if (!date)  { alert('請填入入庫日期'); return; }
+  if (bags<1) { alert('請填入入庫包數'); return; }
+
+  const lotId = genLotId(date);
+  state.seedLots.push({ id:Date.now(), lotId, date, variety, bags, unitcost, note });
+  saveState();
+
+  ['sd-variety','sd-unitcost','sd-note'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('sd-bags').value='';
+  updateLotPreview();
+  renderSeeds();
+  refreshSeedLotSelect();
+}
+
+function renderSeeds() {
+  // 概覽
+  const overview = document.getElementById('seed-overview');
+  if (!state.seedLots.length) {
+    overview.innerHTML = '<div class="seed-stock-bar"><span style="color:var(--teal)">尚無種子入庫記錄，請先新增入庫批次</span></div>';
+  } else {
+    overview.innerHTML = state.seedLots
+      .sort((a,b) => b.date.localeCompare(a.date))
+      .map(lot => {
+        const rem = seedRemainingBags(lot);
+        const total = lot.bags;
+        const pct = total ? Math.round(rem/total*100) : 0;
+        let cls = '';
+        if (rem === 0) cls = 'seed-empty';
+        else if (pct < 20) cls = 'seed-low';
+        const statusTxt = rem===0 ? '已用盡' : pct<20 ? `剩餘偏低 ${pct}%` : `剩餘 ${pct}%`;
+        return `<div class="seed-stock-bar ${cls}" style="justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span class="lot-tag">${lot.lotId}</span>
+            <span style="font-size:12px;color:inherit;opacity:0.8">${lot.variety||''}</span>
+          </div>
+          <div style="text-align:right">
+            <span class="stock-num">${rem}</span>
+            <span class="stock-label"> / ${total} 包　${statusTxt}</span>
+          </div>
+        </div>`;
+      }).join('');
+  }
+
+  // 批次列表
+  document.getElementById('seed-lot-count').textContent = `共${state.seedLots.length}批`;
+  const tbody = document.getElementById('seed-tbody');
+  if (!state.seedLots.length) { tbody.innerHTML='<tr><td colspan="8" class="empty">尚無種子批次</td></tr>'; return; }
+  tbody.innerHTML = [...state.seedLots].sort((a,b)=>b.date.localeCompare(a.date)).map(lot => {
+    const used = seedUsedBags(lot.lotId);
+    const rem  = lot.bags - used;
+    const remCls = rem===0 ? 'text-red' : rem < lot.bags*0.2 ? '' : 'text-green';
+    // 備註：括號外為品質，括號內為使用摘要，分行顯示
+    const noteHtml = (lot.note||'').replace(/(\[.*?\])/g, '<br><span style="color:var(--teal);font-size:11px">$1</span>') || '—';
+    return `<tr>
+      <td><b>${lot.lotId}</b></td>
+      <td>${fmtDate(lot.date)}</td>
+      <td style="font-size:12px">${lot.variety||'—'}</td>
+      <td>${lot.bags}</td>
+      <td>${used}</td>
+      <td class="${remCls}"><b>${rem}</b></td>
+      <td>${lot.unitcost ? 'NT$'+lot.unitcost.toFixed(2) : '—'}</td>
+      <td class="note-cell">${noteHtml}</td>
+      <td><button class="btn btn-sm btn-danger" onclick="deleteSeedLot(${lot.id})">刪除</button></td>
+    </tr>`;
+  }).join('');
+
+  // 使用記錄
+  const useTbody = document.getElementById('seeduse-tbody');
+  const useRows = state.production.filter(p=>p.seedLotId).sort((a,b)=>b.soakDate.localeCompare(a.soakDate));
+  if (!useRows.length) { useTbody.innerHTML='<tr><td colspan="4" class="empty">生產批次建立後自動顯示</td></tr>'; return; }
+  useTbody.innerHTML = useRows.map(p=>`<tr>
+    <td>${fmtDate(p.soakDate)}</td>
+    <td><span class="badge badge-teal" style="font-size:10px">${p.seedLotId}</span></td>
+    <td>${p.bags} 包</td>
+    <td style="font-size:12px;color:var(--text-sub)">${p.harvestDate?'已採收 '+fmtDate(p.harvestDate):'生長中'}</td>
+  </tr>`).join('');
+}
+
+function deleteSeedLot(id) {
+  const lot = state.seedLots.find(l=>l.id===id);
+  if (!lot) return;
+  const used = seedUsedBags(lot.lotId);
+  if (used > 0) { alert(`此批次已有 ${used} 包用於生產記錄，無法直接刪除。請先刪除相關生產批次。`); return; }
+  if (!confirm(`確定刪除種子批次 ${lot.lotId}？`)) return;
+  state.seedLots = state.seedLots.filter(l=>l.id!==id);
+  saveState(); renderSeeds(); refreshSeedLotSelect();
+}
+
+// ── 客戶 ──────────────────────────────────────────────────────────────────────
 function addCustomer() {
   const name = document.getElementById('c-name').value.trim();
   if (!name) { alert('請填入客戶名稱'); return; }
@@ -443,13 +719,14 @@ function refreshCustSelect() {
   sel.value = cur;
 }
 
+// ── 出貨 ──────────────────────────────────────────────────────────────────────
 function addShipment() {
-  const date = document.getElementById('s-date').value;
+  const date  = document.getElementById('s-date').value;
   const custId = document.getElementById('s-customer').value;
-  const box = +document.getElementById('s-box').value||0;
-  const pkg = +document.getElementById('s-pkg').value||0;
+  const box   = +document.getElementById('s-box').value||0;
+  const pkg   = +document.getElementById('s-pkg').value||0;
   if (!date||!custId) { alert('請填入日期及客戶'); return; }
-  if (!box && !pkg) { alert('請填入出貨數量'); return; }
+  if (!box && !pkg)   { alert('請填入出貨數量'); return; }
   const cust = state.customers.find(c=>c.id==custId);
   state.shipments.push({ id:Date.now(), date, custId:+custId, custName:cust.name, custType:cust.type, box, pkg });
   saveState();
@@ -481,13 +758,14 @@ function deleteShip(id) {
   saveState(); renderShipments();
 }
 
+// ── 庫存 ──────────────────────────────────────────────────────────────────────
 function saveInitStock() {
   state.initStock = +document.getElementById('i-init').value || 0;
   saveState();
 }
 
 function addInventory() {
-  const date = document.getElementById('i-date').value;
+  const date   = document.getElementById('i-date').value;
   const actual = +document.getElementById('i-actual').value;
   if (!date) { alert('請填入日期'); return; }
   const idx = state.inventory.findIndex(i=>i.date===date);
@@ -507,16 +785,16 @@ function renderInventory() {
   let prev = state.initStock || 0;
   tbody.innerHTML = rows.map(inv => {
     const harvest = state.production.filter(p=>p.harvestDate===inv.date).reduce((s,p)=>s+p.yield,0);
-    const ships = state.shipments.filter(s=>s.date===inv.date);
-    const boxOut = ships.reduce((s,r)=>s+r.box,0);
-    const pkgOut = ships.reduce((s,r)=>s+r.pkg,0);
+    const ships   = state.shipments.filter(s=>s.date===inv.date);
+    const boxOut  = ships.reduce((s,r)=>s+r.box,0);
+    const pkgOut  = ships.reduce((s,r)=>s+r.pkg,0);
     const totalOut = +(boxOut + pkgOut*0.05).toFixed(2);
-    const ledger = +(prev + harvest - totalOut).toFixed(2);
-    const diff = +(ledger - inv.actual).toFixed(2);
+    const ledger   = +(prev + harvest - totalOut).toFixed(2);
+    const diff     = +(ledger - inv.actual).toFixed(2);
     let label='', cls='';
-    if (diff===0) { label='庫存吻合'; cls='diff-ok'; }
-    else if (diff>0) { label=`散客/公關 ${diff}件`; cls='diff-ok'; }
-    else { label=`⚠️ 異常 ${Math.abs(diff)}件`; cls='diff-warn'; }
+    if (diff===0)     { label='庫存吻合'; cls='diff-ok'; }
+    else if (diff>0)  { label=`散客/公關 ${diff}件`; cls='diff-ok'; }
+    else              { label=`⚠️ 異常 ${Math.abs(diff)}件`; cls='diff-warn'; }
     prev = inv.actual;
     return `<tr>
       <td>${fmtDate(inv.date)}</td><td>${harvest||0}</td><td>${totalOut}</td>
@@ -528,33 +806,34 @@ function renderInventory() {
   }).join('');
 }
 
+// ── 月報 ──────────────────────────────────────────────────────────────────────
 function renderReport() {
   const now = new Date(); const m = now.getFullYear()+'-'+(now.getMonth()+1).toString().padStart(2,'0');
-  const mProd = state.production.filter(p=>p.soakDate.startsWith(m));
+  const mProd    = state.production.filter(p=>p.soakDate.startsWith(m));
   const mHarvest = state.production.filter(p=>p.harvestDate&&p.harvestDate.startsWith(m));
-  const mShips = state.shipments.filter(s=>s.date.startsWith(m));
-  const totBox = mShips.reduce((s,r)=>s+r.box,0);
-  const totPkg = mShips.reduce((s,r)=>s+r.pkg,0);
+  const mShips   = state.shipments.filter(s=>s.date.startsWith(m));
+  const totBox   = mShips.reduce((s,r)=>s+r.box,0);
+  const totPkg   = mShips.reduce((s,r)=>s+r.pkg,0);
   const totHarvest = mHarvest.reduce((s,p)=>s+p.yield,0);
   const mInv = state.inventory.filter(i=>i.date.startsWith(m));
-  let prev = state.initStock||0, totalDiff=0;
+  let prev=state.initStock||0, totalDiff=0;
   mInv.forEach(inv=>{
-    const harvest = state.production.filter(p=>p.harvestDate===inv.date).reduce((s,p)=>s+p.yield,0);
-    const ships = state.shipments.filter(s=>s.date===inv.date);
-    const out = ships.reduce((s,r)=>s+r.box+r.pkg*0.05,0);
-    const diff = +(prev+harvest-out-inv.actual).toFixed(2);
+    const harvest=state.production.filter(p=>p.harvestDate===inv.date).reduce((s,p)=>s+p.yield,0);
+    const ships=state.shipments.filter(s=>s.date===inv.date);
+    const out=ships.reduce((s,r)=>s+r.box+r.pkg*0.05,0);
+    const diff=+(prev+harvest-out-inv.actual).toFixed(2);
     if (diff>0) totalDiff+=diff;
-    prev = inv.actual;
+    prev=inv.actual;
   });
-  const avgD = mHarvest.length ? Math.round(mHarvest.reduce((s,p)=>{
-    return s+(new Date(p.harvestDate)-new Date(p.soakDate))/86400000;
-  },0)/mHarvest.length) : '—';
+  const avgD = mHarvest.length ? Math.round(mHarvest.reduce((s,p)=>s+(new Date(p.harvestDate)-new Date(p.soakDate))/86400000,0)/mHarvest.length) : '—';
+  // 本月種子用量
+  const mSeedBags = state.production.filter(p=>p.soakDate.startsWith(m)).reduce((s,p)=>s+p.bags,0);
   document.getElementById('report-stats').innerHTML = [
     ['浸種批次', mProd.length, '批'],
     ['本月採收', totHarvest, '件'],
     ['箱裝出貨', totBox, '件'],
     ['300g出貨', totPkg, '包'],
-    ['散客/公關', totalDiff.toFixed(1), '件'],
+    ['種子用量', mSeedBags, '包'],
     ['平均天數', avgD, '天'],
   ].map(([l,v,u])=>`<div class="stat"><div class="stat-label">${l}</div><div class="stat-value">${v}<span class="stat-unit">${u}</span></div></div>`).join('');
 
@@ -562,7 +841,7 @@ function renderReport() {
   if (!state.customers.length) { tbody.innerHTML='<tr><td colspan="7" class="empty">尚無客戶資料</td></tr>'; return; }
   let grand=0;
   const rows = state.customers.map(c=>{
-    const cs = mShips.filter(s=>s.custId===c.id);
+    const cs=mShips.filter(s=>s.custId===c.id);
     const box=cs.reduce((s,r)=>s+r.box,0), pkg=cs.reduce((s,r)=>s+r.pkg,0);
     const ba=box*(c.boxPrice||0), pa=pkg*(c.pkgPrice||0), tot=ba+pa;
     grand+=tot;
@@ -575,113 +854,84 @@ function renderReport() {
   tbody.innerHTML = rows + `<tr class="total-row"><td colspan="6" style="text-align:right">本月總計</td><td>$${fmtNum(grand)}</td></tr>`;
 }
 
-
+// ── 匯出 ──────────────────────────────────────────────────────────────────────
 function exportCSV(type) {
   const now = new Date();
   const dateStr = now.getFullYear()+'-'+(now.getMonth()+1).toString().padStart(2,'0')+'-'+now.getDate().toString().padStart(2,'0');
-
-  if (type === 'all') {
-    const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
-    downloadFile(blob, `豌豆苗全部資料_${dateStr}.json`);
-    return;
+  if (type==='all') {
+    downloadFile(new Blob([JSON.stringify(state,null,2)],{type:'application/json'}), `豌豆苗全部資料_${dateStr}.json`); return;
   }
-
-  let csv = '', filename = '';
-
-  if (type === 'shipments') {
-    csv = '出貨日期,客戶名稱,客戶類型,箱裝(件),300g(包)\n';
-    state.shipments.forEach(s => {
-      csv += `${s.date},${s.custName},${s.custType},${s.box},${s.pkg}\n`;
+  let csv='', filename='';
+  if (type==='shipments') {
+    csv='出貨日期,客戶名稱,客戶類型,箱裝(件),300g(包)\n';
+    state.shipments.forEach(s=>{ csv+=`${s.date},${s.custName},${s.custType},${s.box},${s.pkg}\n`; });
+    filename=`豌豆苗出貨記錄_${dateStr}.csv`;
+  }
+  if (type==='production') {
+    csv='浸種日期,種子批號,浸泡包數,預計採收日,實際採收日,採收量(件),生產天數\n';
+    state.production.forEach(p=>{
+      const days=p.harvestDate?Math.round((new Date(p.harvestDate)-new Date(p.soakDate))/86400000):'';
+      csv+=`${p.soakDate},${p.seedLotId||p.batch||''},${p.bags},${p.estHarvestDate},${p.harvestDate||''},${p.yield||0},${days}\n`;
     });
-    filename = `豌豆苗出貨記錄_${dateStr}.csv`;
+    filename=`豌豆苗生產記錄_${dateStr}.csv`;
   }
-
-  if (type === 'production') {
-    csv = '浸種日期,種子批號,浸泡包數,預計採收日,實際採收日,採收量(件),生產天數\n';
-    state.production.forEach(p => {
-      const days = p.harvestDate ? Math.round((new Date(p.harvestDate)-new Date(p.soakDate))/86400000) : '';
-      csv += `${p.soakDate},${p.batch},${p.bags},${p.estHarvestDate},${p.harvestDate||''},${p.yield||0},${days}\n`;
+  if (type==='seeds') {
+    csv='批號,入庫日期,品種,入庫包數,已用包數,剩餘包數,成本單價(NT$/KG),備註\n';
+    state.seedLots.forEach(l=>{
+      const used=seedUsedBags(l.lotId), rem=l.bags-used;
+      csv+=`${l.lotId},${l.date},${l.variety||''},${l.bags},${used},${rem},${l.unitcost||''},"${(l.note||'').replace(/"/g,'""')}"\n`;
     });
-    filename = `豌豆苗生產記錄_${dateStr}.csv`;
+    filename=`豌豆苗種子庫存_${dateStr}.csv`;
   }
-
-  if (type === 'inventory') {
-    csv = '日期,當日採收(件),出貨箱裝(件),出貨300g(包),出貨合計(件),帳面庫存(件),實際庫存(件),差額(件),差額說明\n';
-    let prev = state.initStock || 0;
-    state.inventory.forEach(inv => {
-      const harvest = state.production.filter(p=>p.harvestDate===inv.date).reduce((s,p)=>s+p.yield,0);
-      const ships = state.shipments.filter(s=>s.date===inv.date);
-      const boxOut = ships.reduce((s,r)=>s+r.box,0);
-      const pkgOut = ships.reduce((s,r)=>s+r.pkg,0);
-      const totalOut = +(boxOut+pkgOut*0.05).toFixed(2);
-      const ledger = +(prev+harvest-totalOut).toFixed(2);
-      const diff = +(ledger-inv.actual).toFixed(2);
-      const label = diff===0 ? '庫存吻合' : diff>0 ? `散客/公關品${diff}件` : `庫存異常${Math.abs(diff)}件`;
-      csv += `${inv.date},${harvest},${boxOut},${pkgOut},${totalOut},${ledger},${inv.actual},${diff},${label}\n`;
-      prev = inv.actual;
-    });
-    filename = `豌豆苗庫存記錄_${dateStr}.csv`;
-  }
-
-  const bom = '\uFEFF';
-  const blob = new Blob([bom+csv], {type:'text/csv;charset=utf-8'});
-  downloadFile(blob, filename);
+  downloadFile(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}), filename);
 }
 
 function downloadFile(blob, filename) {
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = filename;
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=filename;
   document.body.appendChild(a); a.click();
   document.body.removeChild(a); URL.revokeObjectURL(url);
 }
 
-
+// ── 編輯採收 ──────────────────────────────────────────────────────────────────
 function openEditModal(id) {
   const p = state.production.find(p=>p.id===id);
   if (!p) return;
   document.getElementById('edit-id').value = id;
-  document.getElementById('edit-batch-label').textContent = `批號：${p.batch}　浸種：${fmtDate(p.soakDate)}`;
+  document.getElementById('edit-batch-label').textContent = `批號：${p.seedLotId||p.batch}　浸種：${fmtDate(p.soakDate)}`;
   document.getElementById('edit-soak-date').value = p.soakDate;
-  document.getElementById('edit-batch').value = p.batch;
+  document.getElementById('edit-batch').value = p.seedLotId || p.batch;
   document.getElementById('edit-bags').value = p.bags;
-  document.getElementById('edit-harvest-date').value = p.harvestDate || '';
-  document.getElementById('edit-yield').value = p.yield || '';
-  const modal = document.getElementById('edit-modal');
-  modal.style.display = 'flex';
+  document.getElementById('edit-harvest-date').value = p.harvestDate||'';
+  document.getElementById('edit-yield').value = p.yield||'';
+  document.getElementById('edit-modal').style.display='flex';
 }
 
-function closeEditModal() {
-  document.getElementById('edit-modal').style.display = 'none';
-}
+function closeEditModal() { document.getElementById('edit-modal').style.display='none'; }
 
 function saveEdit() {
-  const id = +document.getElementById('edit-id').value;
+  const id  = +document.getElementById('edit-id').value;
   const idx = state.production.findIndex(p=>p.id===id);
-  if (idx < 0) return;
-  const soakDate = document.getElementById('edit-soak-date').value;
+  if (idx<0) return;
+  const soakDate    = document.getElementById('edit-soak-date').value;
   const harvestDate = document.getElementById('edit-harvest-date').value;
-  state.production[idx].soakDate = soakDate;
-  state.production[idx].batch = document.getElementById('edit-batch').value.trim();
-  state.production[idx].bags = +document.getElementById('edit-bags').value || 0;
-  state.production[idx].harvestDate = harvestDate;
-  state.production[idx].yield = +document.getElementById('edit-yield').value || 0;
-  // recalc estHarvestDate based on current avg
+  const newLotId    = document.getElementById('edit-batch').value.trim();
+  state.production[idx].soakDate     = soakDate;
+  state.production[idx].batch        = newLotId;
+  state.production[idx].seedLotId    = newLotId;
+  state.production[idx].bags         = +document.getElementById('edit-bags').value||0;
+  state.production[idx].harvestDate  = harvestDate;
+  state.production[idx].yield        = +document.getElementById('edit-yield').value||0;
   const days = avgDays();
   state.production[idx].estHarvestDate = new Date(new Date(soakDate).getTime()+days*86400000).toISOString().slice(0,10);
-  saveState();
-  closeEditModal();
-  renderProduction();
-  updateEstHarvest();
+  saveState(); closeEditModal(); renderProduction(); updateEstHarvest(); renderSeeds();
 }
 
-// Close modal on backdrop click
-document.getElementById('edit-modal').addEventListener('click', function(e) {
-  if (e.target === this) closeEditModal();
-});
+document.getElementById('edit-modal').addEventListener('click',function(e){ if(e.target===this) closeEditModal(); });
 
 function renderAll() {
-  renderProduction(); renderCustomers(); renderShipments(); refreshCustSelect();
+  renderProduction(); renderCustomers(); renderShipments(); refreshCustSelect(); refreshSeedLotSelect();
 }
 
 init();
